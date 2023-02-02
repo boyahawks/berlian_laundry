@@ -252,9 +252,11 @@ class _RegistrasiinState extends State<Registrasi> {
                               style: TextStyle(color: Colors.red),
                             ),
                           ),
-                          SizedBox(
-                            height: 15,
-                          ),
+                          controller.emailValidasi.value == ""
+                              ? SizedBox()
+                              : SizedBox(
+                                  height: 15,
+                                ),
                           Padding(
                               padding: const EdgeInsets.only(left: 20),
                               child: Text("No Wa")),
@@ -319,14 +321,6 @@ class _RegistrasiinState extends State<Registrasi> {
                                             "Email sudah terdaftar");
                                       } else {
                                         controller.registrasiUser();
-                                        controller.username.value.text == "";
-                                        controller.email.value.text == "";
-                                        controller.nohp.value.text == "";
-                                        controller.password.value.text == "";
-                                        UtilsAlert.showToast(
-                                            "Berhasil Registrasi");
-                                        Navigator.pop(context);
-                                        Get.offAll(Login());
                                       }
                                     });
                                   }

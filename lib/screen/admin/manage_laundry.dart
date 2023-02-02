@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, use_build_context_synchronously
 import 'package:berlian_laundry/controller/dashboard_admin_controller.dart';
 import 'package:berlian_laundry/controller/laundry_controller.dart';
+import 'package:berlian_laundry/controller/print_struk_controller.dart';
 import 'package:berlian_laundry/screen/admin/dashboard_admin.dart';
 import 'package:berlian_laundry/utils/api.dart';
 import 'package:berlian_laundry/utils/constant.dart';
@@ -965,68 +966,76 @@ class ManageLaundry extends StatelessWidget {
                 controller.member.value.text == '1'
                     ? SizedBox()
                     : Expanded(
+                        child: Padding(
+                        padding: const EdgeInsets.only(right: 8),
                         child: TextButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Color.fromARGB(255, 11, 27, 70)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ))),
-                        onPressed: () => controller.hitungAkumulasiLaundry(),
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 15, right: 15),
-                            child: Text(
-                              "Hitung",
-                              style: TextStyle(color: Colors.white),
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Color.fromARGB(255, 11, 27, 70)),
+                              shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ))),
+                          onPressed: () => controller.hitungAkumulasiLaundry(),
+                          child: Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 15, right: 15),
+                              child: Text(
+                                "Hitung",
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
                           ),
                         ),
                       )),
                 Expanded(
-                    child: TextButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          Color.fromARGB(255, 11, 27, 70)),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ))),
-                  onPressed: () {
-                    UtilsAlert.showLoadingIndicator(Get.context!);
-                    if (controller.member.value.text == '1') {
-                      if (controller.jumlahKg.value.text != "") {
-                        controller.prosesSimpanLaundryForMember();
-                      } else {
-                        Navigator.pop(Get.context!);
-                        UtilsAlert.showToast(
-                            "Harap lengkapi form yang tersedia...");
-                      }
-                    } else {
-                      if (controller.namaFileNota.value == "") {
-                        if (controller.idUser.value.text == "" ||
-                            controller.totalDibayar.value.text == "" ||
-                            controller.tanggalProses.value.text == "" ||
-                            controller.tanggalSelesai.value.text == "") {
+                    child: Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: TextButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Color.fromARGB(255, 11, 27, 70)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ))),
+                    onPressed: () {
+                      UtilsAlert.showLoadingIndicator(Get.context!);
+                      if (controller.member.value.text == '1') {
+                        if (controller.jumlahKg.value.text != "") {
+                          controller.prosesSimpanLaundryForMember();
+                        } else {
                           Navigator.pop(Get.context!);
                           UtilsAlert.showToast(
                               "Harap lengkapi form yang tersedia...");
-                        } else {
-                          controller.validasiSimpan(0);
                         }
                       } else {
-                        Navigator.pop(Get.context!);
-                        UtilsAlert.showToast("Data ini sudah disimpan...");
+                        if (controller.namaFileNota.value == "") {
+                          if (controller.idUser.value.text == "" ||
+                              controller.totalDibayar.value.text == "" ||
+                              controller.tanggalProses.value.text == "" ||
+                              controller.tanggalSelesai.value.text == "") {
+                            Navigator.pop(Get.context!);
+                            UtilsAlert.showToast(
+                                "Harap lengkapi form yang tersedia...");
+                          } else {
+                            controller.validasiSimpan(0);
+                          }
+                        } else {
+                          Navigator.pop(Get.context!);
+                          UtilsAlert.showToast("Data ini sudah disimpan...");
+                        }
                       }
-                    }
-                  },
-                  child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 15, right: 15),
-                      child: Text(
-                        "Submit",
-                        style: TextStyle(color: Colors.white),
+                    },
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 15, right: 15),
+                        child: Text(
+                          "Simpan",
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
@@ -1052,34 +1061,81 @@ class ManageLaundry extends StatelessWidget {
                         SizedBox(
                           height: 15,
                         ),
-                        Text(
-                          controller.namaFileNota.value,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                        // Text(
+                        //   controller.namaFileNota.value,
+                        //   style: TextStyle(fontWeight: FontWeight.bold),
+                        // ),
                         SizedBox(
                           height: 10,
                         ),
-                        TextButton(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Color.fromARGB(255, 11, 27, 70)),
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ))),
-                          onPressed: () {
-                            controller.validasiClearData();
-                          },
-                          child: Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 15, right: 15),
-                              child: Text(
-                                "Clear Data",
-                                style: TextStyle(color: Colors.white),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                                child: Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: TextButton(
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Color.fromARGB(255, 11, 27, 70)),
+                                    shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    ))),
+                                onPressed: () {
+                                  PrintStrukController().prosesPrintStruk(
+                                      controller.dataUserPesan.value,
+                                      controller.menuPesanan.value,
+                                      controller.kodePesanan.value,
+                                      controller.idNomorRiwayatLaundry.value,
+                                      controller.tanggalProses.value.text,
+                                      controller.tanggalSelesai.value.text,
+                                      controller.totalDibayar.value.text,
+                                      controller.dropdownvalue.value);
+                                },
+                                child: Center(
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.only(left: 15, right: 15),
+                                    child: Text(
+                                      "Print Struk",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
+                            )),
+                            Expanded(
+                                child: Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: TextButton(
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Color.fromARGB(255, 11, 27, 70)),
+                                    shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    ))),
+                                onPressed: () {
+                                  controller.validasiClearData();
+                                },
+                                child: Center(
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.only(left: 15, right: 15),
+                                    child: Text(
+                                      "Transaksi Baru",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ))
+                          ],
                         )
                       ],
                     ),

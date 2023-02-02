@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, sized_box_for_whitespace
 
+import 'package:berlian_laundry/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
@@ -43,7 +44,7 @@ class UtilsAlert {
       builder: (BuildContext context) {
         return AlertDialog(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                borderRadius: BorderRadius.all(Radius.circular(8.0))),
             content: SizedBox(
               width: 50,
               child: Column(
@@ -52,7 +53,10 @@ class UtilsAlert {
                   children: [
                     Padding(
                         child: Container(
-                            child: CircularProgressIndicator(strokeWidth: 3),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 3,
+                              color: Constanst.colorPrimary,
+                            ),
                             width: 35,
                             height: 35),
                         padding: EdgeInsets.only(bottom: 16)),

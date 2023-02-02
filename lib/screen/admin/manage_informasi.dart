@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, use_build_context_synchronously
+import 'package:berlian_laundry/controller/button_shett_controller.dart';
 import 'package:berlian_laundry/controller/dashboard_admin_controller.dart';
 import 'package:berlian_laundry/screen/admin/dashboard_admin.dart';
 import 'package:berlian_laundry/utils/api.dart';
@@ -78,6 +79,7 @@ class ManageInformasi extends StatelessWidget {
         ),
       ),
       child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Obx(
           () => Column(
             children: [
@@ -220,15 +222,15 @@ class ManageInformasi extends StatelessWidget {
               children: [
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10),
+                    padding: EdgeInsets.only(left: 30, right: 30),
                     child: TextButton(
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
-                              Colors.blue.shade600),
+                              Constanst.colorPrimary),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
+                            borderRadius: Constanst.borderStyle2,
                           ))),
                       onPressed: () {
                         controller.informasi.value.text =
@@ -239,12 +241,18 @@ class ManageInformasi extends StatelessWidget {
                       child: Center(
                         child:
                             controller.informasiDashboard.value['status'] == 0
-                                ? Text(
-                                    "AKTIF",
-                                    style: TextStyle(color: Colors.white),
+                                ? Padding(
+                                    padding: const EdgeInsets.all(6.0),
+                                    child: Text(
+                                      "AKTIF",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   )
-                                : Text("NON AKTIF",
-                                    style: TextStyle(color: Colors.white)),
+                                : Padding(
+                                    padding: const EdgeInsets.all(6.0),
+                                    child: Text("NON AKTIF",
+                                        style: TextStyle(color: Colors.white)),
+                                  ),
                       ),
                     ),
                   ),
@@ -262,71 +270,123 @@ class ManageInformasi extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.only(top: 10, left: 40, right: 40),
           child: TextButton(
             style: ButtonStyle(
                 backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.blue.shade600),
+                    MaterialStateProperty.all<Color>(Constanst.colorPrimary),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
+                  borderRadius: Constanst.borderStyle2,
                 ))),
             onPressed: () => controller.addInformasiUser(context),
             child: Center(
-              child: Text(
-                "Tambah Informasi",
-                style: TextStyle(color: Colors.white),
+              child: Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: Text(
+                  "Tambah Informasi",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ),
         ),
         SizedBox(
-          height: 500,
-          child: Padding(
-            padding: EdgeInsets.only(
-                left: Constanst.defaultMarginPadding,
-                right: Constanst.defaultMarginPadding),
-            child: ListView.builder(
-              physics: BouncingScrollPhysics(),
-              itemCount: controller.informasiAllUser.value.length,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {
-                    controller.idInformasiAlluserSelected.value = controller
-                        .informasiAllUser.value[index]['id_informasi'];
-                    controller.validasiInformasi(
-                        context, "Hapus informasi ini...?", 2);
-                  },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        controller.informasiAllUser.value[index]['informasi'],
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: Constanst.sizeText),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Text(Constanst.convertDate(controller
-                          .informasiAllUser.value[index]['date_publish'])),
-                      SizedBox(
-                        height: Constanst.defaultMarginPadding,
-                      ),
-                      Divider(
-                        height: 5,
-                        color: Colors.grey,
-                      )
-                    ],
-                  ),
-                );
-              },
-            ),
+          height: 30,
+        ),
+        Padding(
+          padding: EdgeInsets.only(
+              left: Constanst.defaultMarginPadding,
+              right: Constanst.defaultMarginPadding),
+          child: ListView.builder(
+            physics: BouncingScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: controller.informasiAllUser.value.length,
+            itemBuilder: (context, index) {
+              var id = controller.informasiAllUser.value[index]['id_informasi'];
+              var informasi =
+                  controller.informasiAllUser.value[index]['informasi'];
+              var tanggal =
+                  controller.informasiAllUser.value[index]['date_publish'];
+              var gambar =
+                  controller.informasiAllUser.value[index]['file_gambar'];
+              return InkWell(
+                onTap: () {
+                  controller.idInformasiAlluserSelected.value = id;
+                  controller.validasiInformasi(
+                      context, "Hapus informasi ini...?", 2);
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "$informasi",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: Constanst.sizeText),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(Constanst.convertDate(tanggal)),
+                        ),
+                        gambar == ""
+                            ? SizedBox()
+                            : Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Constanst.colorPrimary,
+                                      borderRadius: Constanst.borderStyle1),
+                                  alignment: Alignment.center,
+                                  child: InkWell(
+                                    onTap: () {
+                                      ButtonSheetController()
+                                          .validasiButtonSheet(
+                                              "Detail Foto",
+                                              Center(
+                                                child: Image.network(
+                                                    Api.urlAssetsInformasi +
+                                                        gambar),
+                                              ),
+                                              "lihat_foto",
+                                              () {});
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "Lihat Foto",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: Constanst.defaultMarginPadding,
+                    ),
+                    Divider(
+                      height: 5,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    )
+                  ],
+                ),
+              );
+            },
           ),
+        ),
+        SizedBox(
+          height: 30,
         )
       ],
     );

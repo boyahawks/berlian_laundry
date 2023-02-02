@@ -93,8 +93,8 @@ class _LogininState extends State<Login> {
                           SizedBox(
                             height: 20,
                           ),
-                          Container(
-                              margin: const EdgeInsets.only(left: 20),
+                          Padding(
+                              padding: const EdgeInsets.only(left: 20),
                               child: Text("Email")),
                           SizedBox(
                             height: 5,

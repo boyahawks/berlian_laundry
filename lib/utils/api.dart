@@ -6,14 +6,15 @@ class Api {
   static var basicAuth = 'Basic ' +
       base64Encode(utf8.encode('aplikasiLaundry:6289686113476@laundry#90@'));
 
-  // https://restfull.aksaramerakinusantara.com/
+  // https://laundryapp.aksaramerakinusantara.com/
 
+  // static var basicUrl = "https://laundryapi.aksaramerakinusantara.com/";
   static var basicUrl = "https://laundryapi.aksaramerakinusantara.com/";
-  static var urlAssets =
-      "https://laundryapi.aksaramerakinusantara.com/public/assets_berlian/";
+  static var urlAssets = basicUrl + "assets_berlian/";
   static var urlAssetsBanner = urlAssets + "banner/";
   static var urlAssetsNota = urlAssets + "nota/";
   static var urlAssetsLaporan = urlAssets + "laporan/";
+  static var urlAssetsInformasi = basicUrl + "foto_informasi/";
 
   // node js
   // GET

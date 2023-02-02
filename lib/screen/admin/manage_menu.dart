@@ -80,13 +80,38 @@ class ManageMenu extends StatelessWidget {
           padding: const EdgeInsets.only(left: 15, right: 15),
           child: Column(
             children: [
-              Expanded(
-                flex: 15,
-                child: GridView.builder(
+              SizedBox(
+                height: 18,
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 30, right: 30),
+                decoration: BoxDecoration(
+                    borderRadius: Constanst.borderStyle1,
+                    color: Constanst.colorPrimary),
+                child: InkWell(
+                  onTap: () => controller.tambahDataMenu(),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Text(
+                        "Tambah Data",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              SizedBox(
+                height: 60,
+                child: ListView.builder(
+                    physics: BouncingScrollPhysics(),
                     itemCount: controller.kategoriLaundry.value.length,
                     scrollDirection: Axis.horizontal,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 1),
                     itemBuilder: (context, index) {
                       return Obx(
                         () => InkWell(
@@ -96,19 +121,14 @@ class ManageMenu extends StatelessWidget {
                             controller.chooseMenu();
                           },
                           child: Container(
-                            margin: EdgeInsets.only(
-                                top: 30, bottom: 30, left: 5, right: 5),
+                            margin: EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               color: controller.kategoriLaundry.value[index]
                                           ['is_active'] ==
                                       false
                                   ? Colors.white
                                   : Colors.blue.shade200,
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(15),
-                                  topRight: Radius.circular(15),
-                                  bottomLeft: Radius.circular(15),
-                                  bottomRight: Radius.circular(15)),
+                              borderRadius: Constanst.borderStyle2,
                               boxShadow: [
                                 BoxShadow(
                                   color: Color.fromARGB(255, 135, 135, 135)
@@ -120,11 +140,15 @@ class ManageMenu extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            child: Center(
-                              child: Text(
-                                controller.kategoriLaundry.value[index]
-                                    ['nama_kategori'],
-                                textAlign: TextAlign.center,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 16, right: 16),
+                              child: Center(
+                                child: Text(
+                                  controller.kategoriLaundry.value[index]
+                                      ['nama_kategori'],
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
                           ),
@@ -132,93 +156,134 @@ class ManageMenu extends StatelessWidget {
                       );
                     }),
               ),
-              Expanded(
-                  flex: 85,
+              SizedBox(
+                height: 8,
+              ),
+              Flexible(
                   child: controller.menuSelected.value.isEmpty
                       ? Center(
                           child: Text("No selected..."),
                         )
                       : ListView.builder(
+                          physics: BouncingScrollPhysics(),
                           itemCount: controller.menuSelected.value.length,
                           itemBuilder: (context, index) {
-                            return Row(
+                            return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Expanded(
-                                  flex: 85,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        controller.menuSelected.value[index]
-                                            ['nama'],
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(height: 8),
-                                      Text(
-                                        controller.menuSelected.value[index]
-                                            ['kategori'],
-                                      ),
-                                      SizedBox(height: 8),
-                                      Text(controller.currencyFormatter.format(
-                                          int.parse(controller.menuSelected
-                                              .value[index]['harga']))),
-                                      SizedBox(height: 8),
-                                      Divider(
-                                        height: 5,
-                                        color: Colors.grey,
-                                      ),
-                                      SizedBox(
-                                          height:
-                                              Constanst.defaultMarginPadding),
-                                    ],
-                                  ),
+                                SizedBox(
+                                  height: 8,
                                 ),
-                                Expanded(
-                                  flex: 15,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      IconButton(
-                                          padding: EdgeInsets.all(2.0),
-                                          alignment: Alignment.topCenter,
-                                          onPressed: () {
-                                            controller.idMenu.value.text =
-                                                "${controller.menuSelected.value[index]['id_menu']}";
-                                            controller.namaMenu.value.text =
-                                                controller.menuSelected
-                                                    .value[index]['nama'];
-                                            controller.kategoriMenu.value.text =
-                                                controller.menuSelected
-                                                    .value[index]['kategori'];
-                                            controller.hargaMenu.value.text =
-                                                controller.menuSelected
-                                                    .value[index]['harga'];
-                                            controller.detilMenu(context);
-                                          },
-                                          icon: Icon(
-                                            Icons.edit,
-                                            size: 20,
-                                            color: Colors.green,
-                                          )),
-                                      IconButton(
-                                          padding: EdgeInsets.all(2.0),
-                                          alignment: Alignment.topCenter,
-                                          onPressed: () => controller.hapusMenu(
-                                              controller.menuSelected
-                                                  .value[index]['id_menu']),
-                                          icon: Icon(
-                                            Icons.delete_forever,
-                                            size: 20,
-                                            color: Colors.red,
-                                          ))
-                                    ],
-                                  ),
-                                )
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      flex: 85,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            controller.menuSelected.value[index]
+                                                ['nama'],
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          SizedBox(height: 8),
+                                          Text(
+                                            controller.menuSelected.value[index]
+                                                ['kategori'],
+                                          ),
+                                          SizedBox(height: 8),
+                                          Text(controller.currencyFormatter
+                                              .format(int.parse(controller
+                                                  .menuSelected
+                                                  .value[index]['harga']))),
+                                          SizedBox(height: 8),
+                                          SizedBox(
+                                              height: Constanst
+                                                  .defaultMarginPadding),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 30,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          TextButton(
+                                              style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                          Color>(Colors.green),
+                                                  shape: MaterialStateProperty
+                                                      .all<RoundedRectangleBorder>(
+                                                          RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8.0),
+                                                  ))),
+                                              onPressed: () {
+                                                controller.idMenu.value.text =
+                                                    "${controller.menuSelected.value[index]['id_menu']}";
+                                                controller.namaMenu.value.text =
+                                                    controller.menuSelected
+                                                        .value[index]['nama'];
+                                                controller.kategoriMenu.value
+                                                        .text =
+                                                    controller.menuSelected
+                                                            .value[index]
+                                                        ['kategori'];
+                                                controller
+                                                        .hargaMenu.value.text =
+                                                    controller.menuSelected
+                                                        .value[index]['harga'];
+                                                controller.detilMenu(context);
+                                              },
+                                              child: Center(
+                                                child: Text(
+                                                  "Edit",
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                              )),
+                                          TextButton(
+                                              style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                          Color>(Colors.white),
+                                                  shape: MaterialStateProperty.all<
+                                                          RoundedRectangleBorder>(
+                                                      RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius
+                                                              .circular(
+                                                            8.0,
+                                                          ),
+                                                          side: BorderSide(
+                                                              color: Colors
+                                                                  .red)))),
+                                              onPressed: () =>
+                                                  controller.hapusMenu(controller
+                                                      .menuSelected
+                                                      .value[index]['id_menu']),
+                                              child: Center(
+                                                child: Text(
+                                                  "Hapus",
+                                                  style: TextStyle(
+                                                      color: Colors.red),
+                                                ),
+                                              ))
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Divider(
+                                  height: 5,
+                                  color: Colors.grey,
+                                ),
                               ],
                             );
                           },

@@ -3,11 +3,13 @@ import 'dart:io';
 
 import 'package:berlian_laundry/screen/admin/dashboard_admin.dart';
 import 'package:berlian_laundry/screen/dashboard.dart';
+import 'package:berlian_laundry/screen/login.dart';
 import 'package:berlian_laundry/utils/api.dart';
 import 'package:berlian_laundry/utils/app_data.dart';
 import 'package:berlian_laundry/utils/widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class AuthController extends GetxController {
   var username = TextEditingController().obs;
@@ -47,19 +49,29 @@ class AuthController extends GetxController {
       return true;
   }
 
-  void registrasiUser() {
+  void registrasiUser() async {
     Map<String, dynamic> body = {
       'username': username.value.text,
       'password': password.value.text,
       'email': email.value.text,
-      'no_hp': nohp.value.text
+      'no_hp': nohp.value.text,
+      'tanggal_daftar': "${DateFormat('yyyy-MM-dd').format(DateTime.now())}",
     };
     var connect = Api.connectionApi("post", body, "registerUser");
-    connect.then((dynamic res) {
-      if (res.statusCode == 200) {
-        print(res.body);
-      }
-    });
+    var getValue = await connect;
+    var valueBody = jsonDecode(getValue.body);
+    if (valueBody['status'] == true) {
+      username.value.text == "";
+      email.value.text == "";
+      nohp.value.text == "";
+      password.value.text == "";
+      UtilsAlert.showToast("Berhasil Registrasi");
+      Get.back();
+      Get.offAll(Login());
+    } else {
+      UtilsAlert.showToast("Gagal registrasi");
+      Get.back();
+    }
   }
 
   void validasiLogin() {
@@ -71,20 +83,25 @@ class AuthController extends GetxController {
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
-        if (valueBody['password'] == false) {
+        if (valueBody['status'] == true) {
+          if (valueBody['password'] == false) {
+            UtilsAlert.showToast("User tidak di temukan");
+            Navigator.pop(Get.context!);
+          } else {
+            AppData.username = valueBody['data'][0]['username'];
+            AppData.email = valueBody['data'][0]['email'];
+            AppData.statusLogin = true;
+            if (valueBody['data'][0]['status'] == 2) {
+              UtilsAlert.showToast("Berhasil login");
+              Get.offAll(Dashboard());
+            } else if (valueBody['data'][0]['status'] == 1) {
+              UtilsAlert.showToast("Berhasil login");
+              Get.offAll(DashboardAdmin());
+            }
+          }
+        } else {
           UtilsAlert.showToast("User tidak di temukan");
           Navigator.pop(Get.context!);
-        } else {
-          AppData.username = valueBody['data'][0]['username'];
-          AppData.email = valueBody['data'][0]['email'];
-          AppData.statusLogin = true;
-          if (valueBody['data'][0]['status'] == 2) {
-            UtilsAlert.showToast("Berhasil login");
-            Get.offAll(Dashboard());
-          } else if (valueBody['data'][0]['status'] == 1) {
-            UtilsAlert.showToast("Berhasil login");
-            Get.offAll(DashboardAdmin());
-          }
         }
       }
     });

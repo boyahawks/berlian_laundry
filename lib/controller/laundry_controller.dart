@@ -42,7 +42,10 @@ class LaundryController extends GetxController {
   var menuTerpilih = [].obs;
   var menuPesanan = [].obs;
   var kategoriLaundry = [].obs;
+  var dataUserPesan = [].obs;
 
+  var kodePesanan = "".obs;
+  var idNomorRiwayatLaundry = "".obs;
   var formLaundry = "".obs;
   var dropdownvalue = "BELUM LUNAS".obs;
   var namaFileNota = "".obs;
@@ -89,8 +92,11 @@ class LaundryController extends GetxController {
   void refresh() {
     cari.value.text = "";
     formLaundry.value = "STEP 1";
+    formLaundry.refresh();
     dropdownvalue.value = "BELUM LUNAS";
+    dropdownvalue.refresh();
     namaFileNota.value = "";
+    namaFileNota.refresh();
 
     idUser.value.text = "";
     username.value.text = "";
@@ -108,12 +114,14 @@ class LaundryController extends GetxController {
     totalDibayar.value.text = "";
     tanggalProses.value.text = "";
     tanggalSelesai.value.text = "";
+    kodePesanan.value = "";
 
-    userDicari.value.clear();
-    menuLaundry.value.clear();
-    menuTerpilih.value.clear();
-    menuPesanan.value.clear();
-    kategoriLaundry.value.clear();
+    userDicari.clear();
+    menuLaundry.clear();
+    menuTerpilih.clear();
+    menuPesanan.clear();
+    kategoriLaundry.clear();
+    dataUserPesan.clear();
   }
 
   void getMenu() {
@@ -157,8 +165,8 @@ class LaundryController extends GetxController {
         element['is_active'] = false;
       }
     }
-    this.menuTerpilih.refresh();
-    this.kategoriLaundry.refresh();
+    menuTerpilih.refresh();
+    kategoriLaundry.refresh();
   }
 
   void changeStep(title) {
@@ -170,7 +178,7 @@ class LaundryController extends GetxController {
         element['is_active'] = false;
       }
     }
-    this.stepLaundry.refresh();
+    stepLaundry.refresh();
   }
 
   void hitungAkumulasiLaundry() {
@@ -179,12 +187,13 @@ class LaundryController extends GetxController {
       hasilHitung += int.parse(element['total']);
     });
     totalDibayar.value.text = '$hasilHitung';
-    this.totalDibayar.refresh();
+    totalDibayar.refresh();
     UtilsAlert.showToast("Berhasil menghitung...");
     print(menuPesanan.value);
   }
 
   void cariUser() {
+    UtilsAlert.loadingContent();
     userDicari.value.clear();
     Map<String, dynamic> body = {
       'cari': '${cari.value.text}',
@@ -194,14 +203,15 @@ class LaundryController extends GetxController {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         if (valueBody['status'] == true) {
-          UtilsAlert.showToast("${valueBody['message']}");
           for (var element in valueBody['data']) {
             if (element['status'] == 2) {
               userDicari.value.add(element);
             }
           }
+          Get.back();
+          UtilsAlert.showToast("${valueBody['message']}");
         }
-        this.userDicari.refresh();
+        userDicari.refresh();
       }
     });
   }
@@ -214,13 +224,13 @@ class LaundryController extends GetxController {
     member.value.text = "${detil['member']}";
     kgUser.value.text = detil['kg'];
     pointUser.value.text = detil['point'];
-    this.idUser.refresh();
-    this.username.refresh();
-    this.email.refresh();
-    this.nohp.refresh();
-    this.member.refresh();
-    this.kgUser.refresh();
-    this.pointUser.refresh();
+    idUser.refresh();
+    username.refresh();
+    email.refresh();
+    nohp.refresh();
+    member.refresh();
+    kgUser.refresh();
+    pointUser.refresh();
   }
 
   void menuSelected(detil) {
@@ -229,11 +239,11 @@ class LaundryController extends GetxController {
     kategoriMenu.value.text = detil['kategori'];
     hargaMenu.value.text = detil['harga'];
     jumlahKg.value.text = "";
-    this.idMenu.refresh();
-    this.namaMenu.refresh();
-    this.kategoriMenu.refresh();
-    this.hargaMenu.refresh();
-    this.jumlahKg.refresh();
+    idMenu.refresh();
+    namaMenu.refresh();
+    kategoriMenu.refresh();
+    hargaMenu.refresh();
+    jumlahKg.refresh();
   }
 
   Future<dynamic> validasiEmail() async {
@@ -258,7 +268,8 @@ class LaundryController extends GetxController {
       'username': usernameRegis.value.text,
       'password': passwordRegis.value.text,
       'email': emailRegis.value.text,
-      'no_hp': nohpRegis.value.text
+      'no_hp': nohpRegis.value.text,
+      'tanggal_daftar': "${DateFormat('yyyy-MM-dd').format(DateTime.now())}",
     };
     var connect = Api.connectionApi("post", body, "registerUser");
     connect.then((dynamic res) {
@@ -271,7 +282,7 @@ class LaundryController extends GetxController {
 
   void changeDropdown(value) {
     dropdownvalue.value = value;
-    this.dropdownvalue.refresh();
+    dropdownvalue.refresh();
   }
 
   void viewPdfNota() {
@@ -301,7 +312,13 @@ class LaundryController extends GetxController {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         if (valueBody['status'] == true) {
-          namaFileNota.value = valueBody['pdf'];
+          namaFileNota.value = "${valueBody['status']}";
+          namaFileNota.refresh();
+          idNomorRiwayatLaundry.value = "${valueBody['id_last']}";
+          dataUserPesan.value = valueBody['data_user'];
+          dataUserPesan.refresh();
+          kodePesanan.value = valueBody['kodepesanan'];
+          kodePesanan.refresh();
           UtilsAlert.showToast(valueBody['message']);
           Navigator.pop(Get.context!);
           Navigator.pop(Get.context!);
@@ -331,7 +348,7 @@ class LaundryController extends GetxController {
 
   void addMenuPesanan() {
     double converthargamenu = double.parse(hargaMenu.value.text);
-    double convertjumlahkg = double.parse(jumlahKg.value.text);
+    double convertjumlahkg = Constanst.validasiValueDouble(jumlahKg.value.text);
     var total = converthargamenu * convertjumlahkg;
     String convert1 = '$total';
     var convert2 = convert1.split('.');
@@ -340,7 +357,7 @@ class LaundryController extends GetxController {
       'id_menu': idMenu.value.text,
       'uraian': namaMenu.value.text,
       'kategori': kategoriMenu.value.text,
-      'jumlah': jumlahKg.value.text,
+      'jumlah': convertjumlahkg,
       'harga': hargaMenu.value.text,
       'total': hitungTotal,
     };
@@ -350,17 +367,17 @@ class LaundryController extends GetxController {
     kategoriMenu.value.text = "";
     hargaMenu.value.text = "";
     jumlahKg.value.text = "";
-    this.idMenu.refresh();
-    this.namaMenu.refresh();
-    this.kategoriMenu.refresh();
-    this.hargaMenu.refresh();
-    this.jumlahKg.refresh();
+    idMenu.refresh();
+    namaMenu.refresh();
+    kategoriMenu.refresh();
+    hargaMenu.refresh();
+    jumlahKg.refresh();
     UtilsAlert.showToast("Berhasil tambah menu pesanan");
   }
 
   void removeMenuPesanan(id) {
     menuPesanan.value.removeWhere((element) => element['id_menu'] == id);
-    this.menuPesanan.refresh();
+    menuPesanan.refresh();
     UtilsAlert.showToast("Berhasil hapus menu pesanan");
   }
 
@@ -462,6 +479,7 @@ class LaundryController extends GetxController {
                 UtilsAlert.showToast("Berhasil Clear Data...");
                 refresh();
                 onInit();
+
                 Navigator.pop(context, true);
               },
             ),
@@ -615,7 +633,7 @@ class LaundryController extends GetxController {
                                   const EdgeInsets.only(left: 5, right: 10),
                               child: TextField(
                                 // ignore: unnecessary_this
-                                obscureText: !this.showpassword.value,
+                                obscureText: !showpassword.value,
                                 controller: passwordRegis.value,
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
@@ -624,13 +642,13 @@ class LaundryController extends GetxController {
                                     suffixIcon: IconButton(
                                       icon: Icon(
                                         Icons.remove_red_eye,
-                                        color: this.showpassword.value
+                                        color: showpassword.value
                                             ? Colors.blue
                                             : Colors.grey,
                                       ),
                                       onPressed: () {
-                                        setState(() => this.showpassword.value =
-                                            !this.showpassword.value);
+                                        setState(() => showpassword.value =
+                                            !showpassword.value);
                                       },
                                     )),
                                 style: TextStyle(
@@ -786,7 +804,7 @@ class LaundryController extends GetxController {
                                         aksiRegistrasiUser();
                                         UtilsAlert.showToast(
                                             "Berhasil Registrasi");
-                                        Get.offAll(ManageLaundry());
+                                        Get.back();
                                       }
                                     });
                                   }

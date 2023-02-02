@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -30,13 +30,13 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
   font_awesome_flutter: ^9.2.0
   intl_utils: ^2.6.1
+  iconsax: ^0.0.8
   intl: ^0.17.0
   path_provider: ^2.0.8
   image_picker: ^0.8.4+4
@@ -67,6 +67,10 @@ dependencies:
   cached_network_image: ^3.2.1
   flutter_speed_dial: ^6.0.0
   datetime_picker_formfield: ^2.0.1
+  currency_text_input_formatter: ^2.1.8
+  pdf: ^3.6.3
+  share_plus: ^4.1.0
+  open_file: ^3.2.1
 
 dev_dependencies:
   flutter_test:
@@ -84,13 +88,12 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
   assets:
-  - assets/
+    - assets/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -108,11 +111,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
+  fonts:
+    - family: Schyler
+      fonts:
+        - asset: assets/fonts/tnr.ttf
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:

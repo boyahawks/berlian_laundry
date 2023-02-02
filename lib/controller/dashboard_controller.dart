@@ -31,6 +31,7 @@ class DashboardController extends GetxController {
   var idKategoriSelected = 0.obs;
 
   var statusPencarian = false.obs;
+  var statusload = false.obs;
 
   NumberFormat currencyFormatter = NumberFormat.currency(
     locale: 'id',
@@ -152,6 +153,8 @@ class DashboardController extends GetxController {
   }
 
   void loadRiwayatLaundry() {
+    statusload.value = true;
+    statusload.refresh();
     Map<String, dynamic> body = {
       'offset': "${riwayatLaundry.value.length}",
       'limit': "$limit",
@@ -164,6 +167,8 @@ class DashboardController extends GetxController {
         print(valueBody['data'].length);
         if (valueBody['data'].length == 0) {
           UtilsAlert.showToast("Selesai load data...");
+          statusload.value = false;
+          statusload.refresh();
         } else {
           for (var element in valueBody['data']) {
             riwayatLaundry.value.add(element);
@@ -257,7 +262,7 @@ class DashboardController extends GetxController {
                   SizedBox(
                     height: 5,
                   ),
-                  Text("${detil['jumlah']} KG"),
+                  Text("${detil['jumlah']} ${detil['kategori']}"),
                   Divider(
                     height: 5,
                     color: Colors.grey,

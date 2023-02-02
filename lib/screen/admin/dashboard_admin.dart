@@ -204,20 +204,15 @@ class DashboardAdmin extends StatelessWidget {
         margin: EdgeInsets.only(left: 15, right: 15),
         decoration: BoxDecoration(
           color: Color.fromARGB(255, 255, 255, 255),
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15),
-            topRight: Radius.circular(15),
-            bottomRight: Radius.circular(15),
-            bottomLeft: Radius.circular(15),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Color.fromARGB(194, 135, 135, 135).withOpacity(0.5),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: Offset(0, 3), // changes position of shadow
-            ),
-          ],
+          borderRadius: Constanst.borderStyle1,
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: Color.fromARGB(194, 135, 135, 135).withOpacity(0.2),
+          //     spreadRadius: 3,
+          //     blurRadius: 0,
+          //     offset: Offset(0, 1), // changes position of shadow
+          //   ),
+          // ],
         ),
         child: Center(
           child: Padding(
@@ -230,7 +225,7 @@ class DashboardAdmin extends StatelessWidget {
                   width: 50,
                   height: 50,
                 ),
-                SizedBox(height: 5),
+                SizedBox(height: 16),
                 Text(
                   title,
                   style: TextStyle(fontWeight: FontWeight.bold),

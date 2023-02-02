@@ -1,11 +1,17 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:berlian_laundry/controller/api_controller.dart';
+import 'package:berlian_laundry/controller/button_shett_controller.dart';
 import 'package:berlian_laundry/screen/dashboard.dart';
 import 'package:berlian_laundry/utils/api.dart';
 import 'package:berlian_laundry/utils/app_data.dart';
 import 'package:berlian_laundry/utils/constant.dart';
 import 'package:berlian_laundry/utils/widget.dart';
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -22,6 +28,9 @@ class DashboardAdminController extends GetxController {
   var addInformasi = TextEditingController().obs;
   var tanggalMulai = TextEditingController().obs;
   var tanggalSampai = TextEditingController().obs;
+  var kgMember = TextEditingController().obs;
+
+  // tambah menu
 
   var allUser = [].obs;
   var allHistory = [].obs;
@@ -32,10 +41,15 @@ class DashboardAdminController extends GetxController {
   var informasiAllUser = [].obs;
   var informasiDashboard = {}.obs;
 
+  var fotoInformasi = File("").obs;
+
   var username = "".obs;
   var iconMenu = "".obs;
   var iconInformasi = "".obs;
   var filePdfLaporan = "".obs;
+  var base64fotoInformasi = "".obs;
+  var namaFileInformasi = "".obs;
+  var dropdownKategoriMenuTambah = "KILOAN".obs;
 
   var jumlahBulanIni = 0.obs;
   var jumlahHistoryBulanIni = 0.obs;
@@ -49,6 +63,7 @@ class DashboardAdminController extends GetxController {
   var viewInformasiDashboard = false.obs;
   var viewInformasiAllUser = false.obs;
   var viewPrintLaporan = false.obs;
+  var imageStatus = false.obs;
 
   int limit = 5;
   int penukaran = 20;
@@ -103,10 +118,12 @@ class DashboardAdminController extends GetxController {
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
+        List tampung = [];
         for (var element in valueBody['data']) {
-          allUser.value.add(element);
+          tampung.add(element);
         }
-        this.allUser.refresh();
+        allUser.value = tampung;
+        allUser.refresh();
       }
     });
   }
@@ -414,25 +431,202 @@ class DashboardAdminController extends GetxController {
   }
 
   void aksiTambahInformasiUser() {
+    UtilsAlert.showLoadingIndicator(Get.context!);
     Map<String, dynamic> body = {
       'informasi': '${addInformasi.value.text}',
+      'nama_foto': namaFileInformasi.value,
+      'gambar': base64fotoInformasi.value,
       'type': '2',
-      'status': '1'
+      'status': '1',
+      'date_publish': "${DateFormat('yyyy-MM-dd').format(DateTime.now())}"
     };
     var connect = Api.connectionApi("post", body, "insert-informasi");
     connect.then((dynamic res) async {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         if (valueBody['status'] == true) {
+          viewInformasiAllUser.value = false;
+          informasiAllUser.value.clear();
+          informasiDashboard.value = {};
+          this.informasiAllUser.refresh();
+          getInformasi();
+          Get.back();
+          Get.back();
           UtilsAlert.showToast("Data berhasil tambah informasi");
-          Navigator.pop(Get.context!, true);
         }
-        viewInformasiAllUser.value = false;
-        informasiAllUser.value.clear();
-        informasiDashboard.value = {};
-        this.informasiAllUser.refresh();
-        getInformasi();
       }
+    });
+  }
+
+  void tambahDataMenu() async {
+    namaMenu.value.text = "";
+    hargaMenu.value.text = "";
+    kategoriMenu.value.text = "";
+    ButtonSheetController().validasiButtonSheet(
+        "Tambah Menu", kontenTambahMenu(), "tambah_menu", () async {
+      if (namaMenu.value.text == "" ||
+          hargaMenu.value.text == "" ||
+          kategoriMenu.value.text == "") {
+        UtilsAlert.showToast("Lengkapi form terlebih dahulu");
+      } else {
+        UtilsAlert.loadingContent();
+        var idKategoriMenu = dropdownKategoriMenuTambah.value == "KILOAN"
+            ? "1"
+            : dropdownKategoriMenuTambah.value == "BEDDING"
+                ? "2"
+                : dropdownKategoriMenuTambah.value == "SPESIAL ITEM"
+                    ? "3"
+                    : dropdownKategoriMenuTambah.value == "PAKET BULANAN"
+                        ? "4"
+                        : "0";
+        int convertHarga = int.parse(hargaMenu.value.text.replaceAll(".", ""));
+        List dataInsert = [
+          idKategoriMenu,
+          namaMenu.value.text,
+          kategoriMenu.value.text,
+          convertHarga
+        ];
+        Future<List> insertDataMenu =
+            ApiController().tambahDataMenu(dataInsert);
+        List hasilInsert = await insertDataMenu;
+        if (hasilInsert[0]) {
+          getMenu();
+          chooseMenu();
+          menuSelected.refresh();
+          UtilsAlert.showToast("Berhasil tambah data !");
+          Get.back();
+        } else {
+          UtilsAlert.showToast("Gagal tambah data !");
+        }
+      }
+    });
+  }
+
+  Widget kontenTambahMenu() {
+    return StatefulBuilder(builder: (context, setState) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Nama Menu"),
+          SizedBox(
+            height: 6,
+          ),
+          Container(
+            height: 50,
+            padding: const EdgeInsets.only(top: 5, bottom: 5, left: 5),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: Constanst.borderStyle2,
+                border: Border.all(width: 1.0, color: Colors.black)),
+            child: Container(
+              padding: const EdgeInsets.only(left: 5, right: 10),
+              child: TextField(
+                cursorColor: Colors.black,
+                controller: namaMenu.value,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                ),
+                style: TextStyle(height: 1.5, color: Colors.black),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          Text("Satuan"),
+          SizedBox(
+            height: 6,
+          ),
+          Container(
+            height: 50,
+            padding: const EdgeInsets.only(top: 5, bottom: 5, left: 5),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: Constanst.borderStyle2,
+                border: Border.all(width: 1.0, color: Colors.black)),
+            child: TextField(
+              cursorColor: Colors.black,
+              controller: kategoriMenu.value,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+              ),
+              style: TextStyle(height: 1.5, color: Colors.black),
+            ),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          Text("Harga"),
+          SizedBox(
+            height: 6,
+          ),
+          Container(
+            height: 50,
+            padding: const EdgeInsets.only(top: 5, bottom: 5, left: 5),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: Constanst.borderStyle2,
+                border: Border.all(width: 1.0, color: Colors.black)),
+            child: TextField(
+              inputFormatters: [
+                CurrencyTextInputFormatter(
+                  locale: 'id',
+                  symbol: '',
+                  decimalDigits: 0,
+                )
+              ],
+              cursorColor: Colors.black,
+              controller: hargaMenu.value,
+              keyboardType: TextInputType.numberWithOptions(signed: true),
+              textInputAction: TextInputAction.done,
+              decoration: new InputDecoration(border: InputBorder.none),
+              style: TextStyle(height: 1.5, color: Colors.black),
+            ),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          Text("Kategori"),
+          SizedBox(
+            height: 6,
+          ),
+          Container(
+            width: MediaQuery.of(Get.context!).size.width,
+            height: 50,
+            padding: const EdgeInsets.only(top: 5, bottom: 5, left: 5),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: Constanst.borderStyle2,
+                border: Border.all(width: 1.0, color: Colors.black)),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                isExpanded: true,
+                value: dropdownKategoriMenuTambah.value,
+                items: <String>[
+                  'KILOAN',
+                  'BEDDING',
+                  'SPESIAL ITEM',
+                  'PAKET BULANAN'
+                ].map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(
+                      value,
+                    ),
+                  );
+                }).toList(),
+                // Step 5.
+                onChanged: (newValue) {
+                  setState(() {
+                    dropdownKategoriMenuTambah.value = newValue!;
+                    dropdownKategoriMenuTambah.refresh();
+                  });
+                },
+              ),
+            ),
+          ),
+        ],
+      );
     });
   }
 
@@ -540,8 +734,7 @@ class DashboardAdminController extends GetxController {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(25.0))),
+          shape: RoundedRectangleBorder(borderRadius: Constanst.borderStyle2),
           content: Container(
             width: MediaQuery.of(context).size.width,
             color: const Color.fromARGB(255, 250, 249, 249),
@@ -597,60 +790,124 @@ class DashboardAdminController extends GetxController {
   }
 
   addInformasiUser(context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(25.0))),
-          content: Container(
-            width: MediaQuery.of(context).size.width,
-            color: const Color.fromARGB(255, 250, 249, 249),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 10),
-                  Center(
-                    child: Text(
-                      "Tambah Informasi",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  TextField(
-                    controller: addInformasi.value,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    minLines: 1,
-                    decoration: InputDecoration(
-                        border: InputBorder.none, hintText: "Isi informasi"),
-                    style: TextStyle(
-                        fontSize: 14.0, height: 2.0, color: Colors.black),
-                  )
-                ],
+    ButtonSheetController().validasiButtonSheet(
+        "Tambah Informasi", contentInformasiUser(), "add_informasi_user", () {
+      if (addInformasi.value.text != "") {
+        aksiTambahInformasiUser();
+      } else {
+        UtilsAlert.showToast("Isi informasi terlebih dahulu");
+      }
+      ;
+    });
+  }
+
+  Widget contentInformasiUser() {
+    return StatefulBuilder(builder: (context, setState) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 6,
+          ),
+          Container(
+            decoration: BoxDecoration(
+                borderRadius: Constanst.borderStyle1,
+                border: Border.all(color: Constanst.colorPrimary)),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                cursorColor: Colors.black,
+                controller: addInformasi.value,
+                maxLines: null,
+                maxLength: 225,
+                decoration: new InputDecoration(
+                    border: InputBorder.none, hintText: "Isi informasi"),
+                keyboardType: TextInputType.multiline,
+                textInputAction: TextInputAction.done,
+                style:
+                    TextStyle(fontSize: 12.0, height: 2.0, color: Colors.black),
               ),
             ),
           ),
-          actions: [
-            TextButton(
-              child: Text("Cancel"),
+          SizedBox(
+            height: 8,
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 30, right: 30),
+            child: TextButton(
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Constanst.colorPrimary),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                    borderRadius: Constanst.borderStyle2,
+                  ))),
               onPressed: () {
-                Navigator.pop(context, true);
+                aksiAmbilFotoInformasi(setState);
               },
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: !imageStatus.value
+                      ? Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Iconsax.camera,
+                              size: 20,
+                              color: Colors.white,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 6),
+                              child: Text(
+                                "Ambil Foto",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        )
+                      : Text(
+                          "${namaFileInformasi.value}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                ),
+              ),
             ),
-            TextButton(
-              // ignore: prefer_const_constructors
-              child: Text("Submit"),
-              onPressed: () {
-                aksiTambahInformasiUser();
-              },
-            ),
-          ],
-        );
-      },
-    );
+          ),
+          SizedBox(
+            height: 30,
+          )
+        ],
+      );
+    });
+  }
+
+  void aksiAmbilFotoInformasi(setState) async {
+    final getFoto = await ImagePicker().pickImage(
+        source: ImageSource.camera,
+        preferredCameraDevice: CameraDevice.front,
+        imageQuality: 100,
+        maxHeight: 350,
+        maxWidth: 350);
+    if (getFoto == null) {
+      UtilsAlert.showToast("Gagal mengambil gambar");
+    } else {
+      setState(() {
+        fotoInformasi.value = File(getFoto.path);
+        var bytes = File(getFoto.path).readAsBytesSync();
+        base64fotoInformasi.value = base64Encode(bytes);
+        namaFileInformasi.value = "${getFoto.name}";
+        imageStatus.value = true;
+        fotoInformasi.refresh();
+        base64fotoInformasi.refresh();
+        namaFileInformasi.refresh();
+        imageStatus.refresh();
+      });
+    }
   }
 
   detilUser(context, detil) {
@@ -699,6 +956,91 @@ class DashboardAdminController extends GetxController {
                 Navigator.pop(context, true);
               },
             ),
+            detil['status'] != 2
+                ? SizedBox()
+                : TextButton(
+                    child: detil['member'] == 0
+                        ? Text("Jadikan member")
+                        : Text("Jadikan user biasa"),
+                    onPressed: () {
+                      detil['member'] == 0
+                          ? ButtonSheetController().validasiButtonSheet(
+                              "Jadikan Member ",
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    height: 50,
+                                    padding: const EdgeInsets.only(
+                                        top: 5, bottom: 5, left: 5),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: Constanst.borderStyle2,
+                                        border: Border.all(
+                                            width: 1.0, color: Colors.black)),
+                                    child: Container(
+                                      padding: const EdgeInsets.only(
+                                          left: 5, right: 10),
+                                      child: TextField(
+                                        cursorColor: Colors.black,
+                                        keyboardType: TextInputType.number,
+                                        controller: kgMember.value,
+                                        decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            hintText: "KG member"),
+                                        style: TextStyle(
+                                            height: 1.5, color: Colors.black),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text(
+                                      "Kamu yakin jadikan ${detil['username']} member berlian laundry ?")
+                                ],
+                              ),
+                              "jadikan_member", () async {
+                              int statusMember = detil['member'] == 0 ? 1 : 0;
+                              if (kgMember.value.text == "") {
+                                UtilsAlert.showToast(
+                                    "Isi kg member terlebih dahulu");
+                              } else {
+                                Future<List> prosesJadikanMember =
+                                    ApiController().jadikanMember(
+                                        "${detil['id_user']}",
+                                        statusMember,
+                                        kgMember.value.text);
+                                List hasilProses = await prosesJadikanMember;
+                                if (hasilProses[0] == true) {
+                                  UtilsAlert.showToast(hasilProses[1]);
+                                  Get.back();
+                                  getUsers();
+                                } else {
+                                  UtilsAlert.showToast(hasilProses[1]);
+                                }
+                              }
+                            })
+                          : ButtonSheetController().validasiButtonSheet(
+                              "Jadikan Member Biasa",
+                              Text(
+                                  "Kamu yakin jadikan ${detil['username']} member biasa berlian laundry ?"),
+                              "jadikan_member_biasa", () async {
+                              int statusMember = detil['member'] == 0 ? 1 : 0;
+                              Future<List> prosesJadikanMember = ApiController()
+                                  .jadikanMember(
+                                      "${detil['id_user']}", statusMember, "0");
+                              List hasilProses = await prosesJadikanMember;
+                              if (hasilProses[0] == true) {
+                                UtilsAlert.showToast(hasilProses[1]);
+                                Get.back();
+                                getUsers();
+                              } else {
+                                UtilsAlert.showToast(hasilProses[1]);
+                              }
+                            });
+                    },
+                  ),
             TextButton(
               child: Text("Tukar"),
               onPressed: () {

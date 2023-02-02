@@ -410,26 +410,28 @@ class ManageHistory extends StatelessWidget {
                                                     ['status'] ==
                                                 '3'
                                             ? SizedBox()
-                                            : Expanded(
-                                                flex: 15,
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    IconButton(
-                                                        onPressed: () => controller
-                                                            .showPdfHistoryLaundry(controller
-                                                                    .riwayatLaundry
-                                                                    .value[index]
-                                                                ['kode_pesan']),
-                                                        icon: Icon(
-                                                          Icons.picture_as_pdf,
-                                                          color: Colors.red,
-                                                          size: 30,
-                                                        ))
-                                                  ],
-                                                ),
-                                              )
+                                            : SizedBox()
+                                        // : Expanded(
+                                        //     flex: 15,
+                                        //     child: Column(
+                                        //       crossAxisAlignment:
+                                        //           CrossAxisAlignment.start,
+                                        //       children: [
+                                        //         IconButton(
+                                        //             onPressed: () {
+                                        //               controller
+                                        //                   .checkingPesananPrint(
+                                        //                       controller
+                                        //                           .riwayatLaundry);
+                                        //             },
+                                        //             icon: Icon(
+                                        //               Icons.picture_as_pdf,
+                                        //               color: Colors.red,
+                                        //               size: 30,
+                                        //             ))
+                                        //       ],
+                                        //     ),
+                                        //   )
                                       ],
                                     );
                                   }),

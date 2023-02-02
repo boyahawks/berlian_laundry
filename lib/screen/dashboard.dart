@@ -247,425 +247,468 @@ class _DashboardinState extends State<Dashboard> {
           ),
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: EdgeInsets.only(left: 20, right: 20, top: 10),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: controller.statusPencarian == false
-                        ? Stack(
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(left: 10),
+              child: controller.statusPencarian == false
+                  ? Stack(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(left: 10),
+                          height: 30,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(15),
+                                  topRight: Radius.circular(15),
+                                  bottomLeft: Radius.circular(15),
+                                  bottomRight: Radius.circular(15)),
+                              border:
+                                  Border.all(width: 1.0, color: Colors.black)),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: TextField(
+                              onTap: () {},
+                              controller: controller.cari.value,
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "Search History"),
+                              style: TextStyle(
+                                  fontSize: 14.0,
+                                  height: 1.0,
+                                  color: Colors.black),
+                            ),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                controller.getRiwayatLaundry();
+                              },
+                              child: Container(
+                                alignment: Alignment.centerLeft,
+                                width: 100,
                                 height: 30,
                                 decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(15),
-                                        topRight: Radius.circular(15),
-                                        bottomLeft: Radius.circular(15),
-                                        bottomRight: Radius.circular(15)),
-                                    border: Border.all(
-                                        width: 1.0, color: Colors.black)),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 8),
-                                  child: TextField(
-                                    onTap: () {},
-                                    controller: controller.cari.value,
-                                    decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: "Search History"),
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        height: 1.0,
-                                        color: Colors.black),
+                                  color: Colors.blue.shade900,
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(15),
+                                      topRight: Radius.circular(15),
+                                      bottomLeft: Radius.circular(15),
+                                      bottomRight: Radius.circular(15)),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "Cari",
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 ),
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      controller.getRiwayatLaundry();
-                                    },
-                                    child: Container(
-                                      alignment: Alignment.centerLeft,
-                                      width: 100,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        color: Colors.blue.shade900,
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(15),
-                                            topRight: Radius.circular(15),
-                                            bottomLeft: Radius.circular(15),
-                                            bottomRight: Radius.circular(15)),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          "Cari",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )
-                        : Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                  onPressed: () {
-                                    controller.closePencarian();
-                                    controller.getRiwayatLaundry();
-                                    controller.update();
-                                  },
-                                  icon: Icon(Icons.close, size: 30)),
-                            ],
-                          ),
-                  )
-                ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
+                  : Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              controller.closePencarian();
+                              controller.getRiwayatLaundry();
+                              controller.update();
+                            },
+                            icon: Icon(Icons.close, size: 30)),
+                      ],
+                    ),
+              // Row(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: [
+              //     Expanded(
+              //       child: controller.statusPencarian == false
+              //           ? Stack(
+              //               children: [
+              //                 Container(
+              //                   margin: const EdgeInsets.only(left: 10),
+              //                   height: 30,
+              //                   decoration: BoxDecoration(
+              //                       color: Colors.white,
+              //                       borderRadius: BorderRadius.only(
+              //                           topLeft: Radius.circular(15),
+              //                           topRight: Radius.circular(15),
+              //                           bottomLeft: Radius.circular(15),
+              //                           bottomRight: Radius.circular(15)),
+              //                       border: Border.all(
+              //                           width: 1.0, color: Colors.black)),
+              //                   child: Padding(
+              //                     padding: const EdgeInsets.only(left: 8),
+              //                     child: TextField(
+              //                       onTap: () {},
+              //                       controller: controller.cari.value,
+              //                       decoration: InputDecoration(
+              //                           border: InputBorder.none,
+              //                           hintText: "Search History"),
+              //                       style: TextStyle(
+              //                           fontSize: 14.0,
+              //                           height: 1.0,
+              //                           color: Colors.black),
+              //                     ),
+              //                   ),
+              //                 ),
+              //                 Row(
+              //                   mainAxisAlignment: MainAxisAlignment.end,
+              //                   children: [
+              //                     InkWell(
+              //                       onTap: () {
+              //                         controller.getRiwayatLaundry();
+              //                       },
+              //                       child: Container(
+              //                         alignment: Alignment.centerLeft,
+              //                         width: 100,
+              //                         height: 30,
+              //                         decoration: BoxDecoration(
+              //                           color: Colors.blue.shade900,
+              //                           borderRadius: BorderRadius.only(
+              //                               topLeft: Radius.circular(15),
+              //                               topRight: Radius.circular(15),
+              //                               bottomLeft: Radius.circular(15),
+              //                               bottomRight: Radius.circular(15)),
+              //                         ),
+              //                         child: Center(
+              //                           child: Text(
+              //                             "Cari",
+              //                             style: TextStyle(color: Colors.white),
+              //                           ),
+              //                         ),
+              //                       ),
+              //                     ),
+              //                   ],
+              //                 ),
+              //               ],
+              //             )
+              //           : Row(
+              //               crossAxisAlignment: CrossAxisAlignment.end,
+              //               mainAxisAlignment: MainAxisAlignment.end,
+              //               children: [
+              //                 IconButton(
+              //                     onPressed: () {
+              //                       controller.closePencarian();
+              //                       controller.getRiwayatLaundry();
+              //                       controller.update();
+              //                     },
+              //                     icon: Icon(Icons.close, size: 30)),
+              //               ],
+              //             ),
+              //     )
+              //   ],
+              // ),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16),
+              child: Text(
+                "Riwayat Laundry",
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
+            Divider(),
             Expanded(
-              flex: 90,
               child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: controller.riwayatLaundry.value.isEmpty
-                    ? Center(
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                            Padding(
-                                child: Container(
-                                    child: CircularProgressIndicator(
-                                        strokeWidth: 3),
-                                    width: 35,
-                                    height: 35),
-                                padding: EdgeInsets.only(bottom: 16)),
-                            Padding(
-                                child: Text(
-                                  'Please wait …',
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 16),
-                                  textAlign: TextAlign.center,
-                                ),
-                                padding: EdgeInsets.only(bottom: 4))
-                          ]))
-                    : controller.cari.value.text == ""
-                        ? SmartRefresher(
-                            enablePullDown: false,
-                            enablePullUp: true,
-                            header: WaterDropHeader(),
-                            onLoading: () async {
-                              await Future.delayed(
-                                  Duration(milliseconds: 1000));
-                              setState(() {
-                                controller.getRiwayatLaundry();
-                                refreshController.loadComplete();
-                              });
-                            },
-                            controller: refreshController,
-                            child: ListView.builder(
-                                itemCount:
-                                    controller.riwayatLaundry.value.length,
-                                itemBuilder: (context, index) {
-                                  return Column(
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          var harga = controller.riwayatLaundry
-                                              .value[index]['total'];
-                                          var convert = harga.split('.');
-                                          var getHarga = convert[0];
-                                          controller.detilRiwayat(
-                                              context,
-                                              controller
-                                                  .riwayatLaundry.value[index],
-                                              getHarga);
-                                        },
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              flex: 15,
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    "Kode",
-                                                    style: TextStyle(
-                                                        fontSize:
-                                                            Constanst.sizeText),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 8,
-                                                  ),
-                                                  Text(
-                                                    "Nama",
-                                                    style: TextStyle(
-                                                        fontSize:
-                                                            Constanst.sizeText),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 8,
-                                                  ),
-                                                  Text(
-                                                    "Status",
-                                                    style: TextStyle(
-                                                        fontSize:
-                                                            Constanst.sizeText),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 8,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Expanded(
-                                              flex: 85,
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    ": ${controller.riwayatLaundry.value[index]['kode_pesan']}",
-                                                    style: TextStyle(
-                                                        fontSize:
-                                                            Constanst.sizeText),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 8,
-                                                  ),
-                                                  Text(
-                                                    ": ${controller.riwayatLaundry.value[index]['username']}",
-                                                    style: TextStyle(
-                                                        fontSize:
-                                                            Constanst.sizeText),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 8,
-                                                  ),
-                                                  controller.riwayatLaundry
-                                                                  .value[index]
-                                                              ['status'] ==
-                                                          "1"
-                                                      ? Text(
-                                                          ": Sedang Proses",
-                                                          style: TextStyle(
-                                                              fontSize:
-                                                                  Constanst
-                                                                      .sizeText,
-                                                              color: Colors
-                                                                  .orange),
-                                                        )
-                                                      : controller.riwayatLaundry
-                                                                          .value[
-                                                                      index]
-                                                                  ['status'] ==
-                                                              "2"
-                                                          ? Text(
-                                                              ": Selesai",
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      Constanst
-                                                                          .sizeText,
-                                                                  color: Colors
-                                                                      .blue),
-                                                            )
-                                                          : controller.riwayatLaundry
-                                                                              .value[
-                                                                          index]
-                                                                      [
-                                                                      'status'] ==
-                                                                  "3"
-                                                              ? Text(
-                                                                  ": Sudah di ambil",
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          Constanst
-                                                                              .sizeText,
-                                                                      color: Colors
-                                                                          .green),
-                                                                )
-                                                              : SizedBox(),
-                                                  SizedBox(
-                                                    height: 8,
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Divider(
-                                        height: 5,
-                                        color: Colors.grey,
-                                      ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                    ],
-                                  );
-                                }))
-                        : ListView.builder(
-                            itemCount: controller.riwayatLaundry.value.length,
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      var harga = controller
-                                          .riwayatLaundry.value[index]['total'];
-                                      var convert = harga.split('.');
-                                      var getHarga = convert[0];
-                                      controller.detilRiwayat(
-                                          context,
-                                          controller
-                                              .riwayatLaundry.value[index],
-                                          getHarga);
-                                    },
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          flex: 20,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Kode",
-                                                style: TextStyle(
-                                                    fontSize:
-                                                        Constanst.sizeText),
-                                              ),
-                                              SizedBox(
-                                                height: 8,
-                                              ),
-                                              Text(
-                                                "Nama",
-                                                style: TextStyle(
-                                                    fontSize:
-                                                        Constanst.sizeText),
-                                              ),
-                                              SizedBox(
-                                                height: 8,
-                                              ),
-                                              Text(
-                                                "Status",
-                                                style: TextStyle(
-                                                    fontSize:
-                                                        Constanst.sizeText),
-                                              ),
-                                              SizedBox(
-                                                height: 8,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 80,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                ": ${controller.riwayatLaundry.value[index]['kode_pesan']}",
-                                                style: TextStyle(
-                                                    fontSize:
-                                                        Constanst.sizeText),
-                                              ),
-                                              SizedBox(
-                                                height: 8,
-                                              ),
-                                              Text(
-                                                ": ${controller.riwayatLaundry.value[index]['username']}",
-                                                style: TextStyle(
-                                                    fontSize:
-                                                        Constanst.sizeText),
-                                              ),
-                                              SizedBox(
-                                                height: 8,
-                                              ),
-                                              controller.riwayatLaundry
-                                                              .value[index]
-                                                          ['status'] ==
-                                                      "1"
-                                                  ? Text(
-                                                      ": Sedang Proses",
-                                                      style: TextStyle(
-                                                          fontSize: Constanst
-                                                              .sizeText,
-                                                          color: Colors.orange),
-                                                    )
-                                                  : controller.riwayatLaundry
-                                                                  .value[index]
-                                                              ['status'] ==
-                                                          "2"
-                                                      ? Text(
-                                                          ": Selesai",
-                                                          style: TextStyle(
-                                                              fontSize:
-                                                                  Constanst
-                                                                      .sizeText,
-                                                              color:
-                                                                  Colors.blue),
-                                                        )
-                                                      : controller.riwayatLaundry
-                                                                          .value[
-                                                                      index]
-                                                                  ['status'] ==
-                                                              "3"
-                                                          ? Text(
-                                                              ": Sudah di ambil",
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      Constanst
-                                                                          .sizeText,
-                                                                  color: Colors
-                                                                      .green),
-                                                            )
-                                                          : SizedBox(),
-                                              SizedBox(
-                                                height: 8,
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
+                  padding: const EdgeInsets.all(16),
+                  child: controller.riwayatLaundry.value.isEmpty &&
+                          controller.statusload.value
+                      ? Center(
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                              Padding(
+                                  child: Container(
+                                      child: CircularProgressIndicator(
+                                          strokeWidth: 3),
+                                      width: 35,
+                                      height: 35),
+                                  padding: EdgeInsets.only(bottom: 16)),
+                              Padding(
+                                  child: Text(
+                                    'Please wait …',
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 16),
+                                    textAlign: TextAlign.center,
                                   ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Divider(
-                                    height: 5,
-                                    color: Colors.grey,
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                ],
-                              );
-                            }),
-              ),
+                                  padding: EdgeInsets.only(bottom: 4))
+                            ]))
+                      : controller.riwayatLaundry.value.isEmpty &&
+                              !controller.statusload.value
+                          ? Center(
+                              child: Text(
+                                "Tidak ada riwayat laundry",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            )
+                          : controller.cari.value.text == ""
+                              ? riwayatMain()
+                              : riwayatLaundryAdaPencarian()),
             )
           ],
         ),
       ),
     );
+  }
+
+  Widget riwayatMain() {
+    return SmartRefresher(
+        enablePullDown: false,
+        enablePullUp: true,
+        header: WaterDropHeader(),
+        onLoading: () async {
+          await Future.delayed(Duration(milliseconds: 1000));
+          setState(() {
+            controller.getRiwayatLaundry();
+            refreshController.loadComplete();
+          });
+        },
+        controller: refreshController,
+        child: ListView.builder(
+            physics: BouncingScrollPhysics(),
+            itemCount: controller.riwayatLaundry.value.length,
+            itemBuilder: (context, index) {
+              return Column(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      var harga =
+                          controller.riwayatLaundry.value[index]['total'];
+                      var convert = harga.split('.');
+                      var getHarga = convert[0];
+                      controller.detilRiwayat(context,
+                          controller.riwayatLaundry.value[index], getHarga);
+                    },
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 15,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Kode",
+                                style: TextStyle(fontSize: Constanst.sizeText),
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Text(
+                                "Nama",
+                                style: TextStyle(fontSize: Constanst.sizeText),
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Text(
+                                "Status",
+                                style: TextStyle(fontSize: Constanst.sizeText),
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          flex: 85,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                ": ${controller.riwayatLaundry.value[index]['kode_pesan']}",
+                                style: TextStyle(fontSize: Constanst.sizeText),
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Text(
+                                ": ${controller.riwayatLaundry.value[index]['username']}",
+                                style: TextStyle(fontSize: Constanst.sizeText),
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              controller.riwayatLaundry.value[index]
+                                          ['status'] ==
+                                      "1"
+                                  ? Text(
+                                      ": Sedang Proses",
+                                      style: TextStyle(
+                                          fontSize: Constanst.sizeText,
+                                          color: Colors.orange),
+                                    )
+                                  : controller.riwayatLaundry.value[index]
+                                              ['status'] ==
+                                          "2"
+                                      ? Text(
+                                          ": Selesai",
+                                          style: TextStyle(
+                                              fontSize: Constanst.sizeText,
+                                              color: Colors.blue),
+                                        )
+                                      : controller.riwayatLaundry.value[index]
+                                                  ['status'] ==
+                                              "3"
+                                          ? Text(
+                                              ": Sudah di ambil",
+                                              style: TextStyle(
+                                                  fontSize: Constanst.sizeText,
+                                                  color: Colors.green),
+                                            )
+                                          : SizedBox(),
+                              SizedBox(
+                                height: 8,
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Divider(
+                    height: 5,
+                    color: Colors.grey,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                ],
+              );
+            }));
+  }
+
+  Widget riwayatLaundryAdaPencarian() {
+    return ListView.builder(
+        itemCount: controller.riwayatLaundry.value.length,
+        itemBuilder: (context, index) {
+          return Column(
+            children: [
+              InkWell(
+                onTap: () {
+                  var harga = controller.riwayatLaundry.value[index]['total'];
+                  var convert = harga.split('.');
+                  var getHarga = convert[0];
+                  controller.detilRiwayat(context,
+                      controller.riwayatLaundry.value[index], getHarga);
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 20,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Kode",
+                            style: TextStyle(fontSize: Constanst.sizeText),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            "Nama",
+                            style: TextStyle(fontSize: Constanst.sizeText),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            "Status",
+                            style: TextStyle(fontSize: Constanst.sizeText),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 80,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            ": ${controller.riwayatLaundry.value[index]['kode_pesan']}",
+                            style: TextStyle(fontSize: Constanst.sizeText),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            ": ${controller.riwayatLaundry.value[index]['username']}",
+                            style: TextStyle(fontSize: Constanst.sizeText),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          controller.riwayatLaundry.value[index]['status'] ==
+                                  "1"
+                              ? Text(
+                                  ": Sedang Proses",
+                                  style: TextStyle(
+                                      fontSize: Constanst.sizeText,
+                                      color: Colors.orange),
+                                )
+                              : controller.riwayatLaundry.value[index]
+                                          ['status'] ==
+                                      "2"
+                                  ? Text(
+                                      ": Selesai",
+                                      style: TextStyle(
+                                          fontSize: Constanst.sizeText,
+                                          color: Colors.blue),
+                                    )
+                                  : controller.riwayatLaundry.value[index]
+                                              ['status'] ==
+                                          "3"
+                                      ? Text(
+                                          ": Sudah di ambil",
+                                          style: TextStyle(
+                                              fontSize: Constanst.sizeText,
+                                              color: Colors.green),
+                                        )
+                                      : SizedBox(),
+                          SizedBox(
+                            height: 8,
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Divider(
+                height: 5,
+                color: Colors.grey,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+            ],
+          );
+        });
   }
 }
